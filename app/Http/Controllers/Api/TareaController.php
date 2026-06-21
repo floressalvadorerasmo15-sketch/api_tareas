@@ -17,6 +17,9 @@ class TareaController extends Controller
 
     public function store(TareaRequest $request)
     {
+        $datos = $request->validated();
+        $datos['completada'] = $datos['completada'] ?? false;
+    
         $tarea = Tarea::create($request->validated());
         return (new TareaResource($tarea))
             ->response()->setStatusCode(201);
