@@ -1,131 +1,42 @@
 # API Tareas — Laravel 13
 
-API REST pública (sin autenticación) para gestionar tareas, construida con Laravel 13 y PostgreSQL.
+API REST con autenticación basada en tokens (Laravel Sanctum).
 
-**Materia:** INF560 — Desarrollo Web Backend
-**Guía:** Laboratorio N° 10 — Construcción de una API REST
-**Universidad:** Universidad Autónoma Tomás Frías (UATF)
+**Materia:** INF560 — Desarrollo Web Backend  
+**Universidad:** Universidad Autónoma Tomás Frías (UATF)  
+**GL10 tag:** v1.0.0 | **GL11 tag:** v2.0
 
 ## Stack
-
-- Laravel 13
-- PHP 8.3+
-- PostgreSQL
-- Laravel Sanctum (instalado, sin usar todavía — se activará en la GL11)
+- Laravel 13 · PHP 8.3+ · PostgreSQL · Laravel Sanctum
 
 ## Instalación
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
 
-1. Clonar el repositorio:
-   ```
-   git clone https://github.com/floressalvadorerasmo15-sketch/api_tareas.git
-   cd api_tareas
-   ```
-
-2. Instalar dependencias:
-   ```
-   composer install
-   ```
-
-3. Configurar el archivo `.env`:
-   ```
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-   Editar las variables de conexión a PostgreSQL:
-   ```
-   DB_CONNECTION=pgsql
-   DB_HOST=127.0.0.1
-   DB_PORT=5432
-   DB_DATABASE=api_tareas
-   DB_USERNAME=postgres
-   DB_PASSWORD=tu_password
-   ```
-
-4. Crear la base de datos en PostgreSQL:
-   ```sql
-   CREATE DATABASE api_tareas;
-   ```
-
-5. Ejecutar las migraciones:
-   ```
-   php artisan migrate
-   ```
-
-6. Levantar el servidor:
-   ```
-   php artisan serve
-   ```
-
-   La API queda disponible en `http://127.0.0.1:8000/api`
-
-## Endpoints
-
-Todas las peticiones deben incluir el header `Accept: application/json`.
-
-| Método | Endpoint | Acción | Código de éxito |
-|---|---|---|---|
-| GET | `/api/tareas` | Listar tareas (paginadas, 10 por página) | 200 |
-| POST | `/api/tareas` | Crear una tarea | 201 |
-| GET | `/api/tareas/{id}` | Ver una tarea | 200 |
-| PUT | `/api/tareas/{id}` | Actualizar una tarea | 200 |
-| DELETE | `/api/tareas/{id}` | Eliminar una tarea | 204 |
-
-### Campos del recurso Tarea
-
-| Campo | Tipo | Reglas de validación |
+## Endpoints públicos (sin token)
+| Método | Endpoint | Código |
 |---|---|---|
-| titulo | string | required, max:255 |
-| descripcion | string | nullable |
-| completada | boolean | opcional (default: false) |
-| vence_el | date | nullable |
+| POST | /api/register | 201 |
+| POST | /api/login | 200 |
 
-### Códigos de error
+## Endpoints protegidos (Bearer token)
+| Método | Endpoint | Código |
+|---|---|---|
+| GET | /api/user | 200 |
+| POST | /api/logout | 200 |
+| GET | /api/tareas | 200 |
+| POST | /api/tareas | 201 |
+| GET | /api/tareas/{id} | 200 |
+| PUT | /api/tareas/{id} | 200 |
+| DELETE | /api/tareas/{id} | 204 |
 
-- `404 Not Found` — el recurso solicitado no existe.
-- `422 Unprocessable Content` — la validación falló (incluye detalle de errores por campo).
-
-## Ejemplos con cURL
-
-**Crear una tarea:**
-```bash
-curl -X POST http://127.0.0.1:8000/api/tareas \
-  -H "Accept: application/json" \
-  -d "titulo=Preparar laboratorio" \
-  -d "descripcion=Guia 10 API REST" \
-  -d "vence_el=2026-07-01"
-```
-
-**Listar tareas:**
-```bash
-curl http://127.0.0.1:8000/api/tareas -H "Accept: application/json"
-```
-
-**Ver una tarea:**
-```bash
-curl http://127.0.0.1:8000/api/tareas/1 -H "Accept: application/json"
-```
-
-**Actualizar una tarea:**
-```bash
-curl -X PUT http://127.0.0.1:8000/api/tareas/1 \
-  -H "Accept: application/json" \
-  -d "titulo=Tarea actualizada"
-```
-
-**Eliminar una tarea:**
-```bash
-curl -X DELETE http://127.0.0.1:8000/api/tareas/1 -H "Accept: application/json"
-```
-
-## Colección de Postman
-
-Se incluye el archivo `api-tareas.postman_collection.json` con todas las peticiones listas para importar en Postman.
-
-## Próximos pasos
-
-Este proyecto continuará en la **GL11**, donde se añadirá autenticación con Laravel Sanctum.
-
-## Autor
-
-Erasmo — Ingeniería Informática, UATF
+## Errores
+- 401 — Sin token o token revocado
+- 403 — Tarea de otro usuario
+- 404 — No encontrado
+- 422 — Validación fallida
