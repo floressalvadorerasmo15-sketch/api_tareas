@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "api-tareas GL11",
+    "description": "Flujo completo con autenticacion Sanctum - GL11 INF560",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Registrar usuario (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "name", "value": "Ana", "type": "text" },
+          { "key": "email", "value": "ana@uatf.edu.bo", "type": "text" },
+          { "key": "password", "value": "secret123", "type": "text" },
+          { "key": "password_confirmation", "value": "secret123", "type": "text" },
+          { "key": "device_name", "value": "postman", "type": "text" }
+        ]},
+        "url": { "raw": "http://127.0.0.1:8000/api/register", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","register"] }
+      }
+    },
+    {
+      "name": "2. Login (200)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "email", "value": "ana@uatf.edu.bo", "type": "text" },
+          { "key": "password", "value": "secret123", "type": "text" },
+          { "key": "device_name", "value": "postman", "type": "text" }
+        ]},
+        "url": { "raw": "http://127.0.0.1:8000/api/login", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","login"] }
+      }
+    },
+    {
+      "name": "3. Crear tarea con token (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "titulo", "value": "Preparar laboratorio GL11", "type": "text" },
+          { "key": "vence_el", "value": "2026-07-01", "type": "text" }
+        ]},
+        "url": { "raw": "http://127.0.0.1:8000/api/tareas", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","tareas"] }
+      }
+    },
+    {
+      "name": "4. Listar mis tareas (200)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://127.0.0.1:8000/api/tareas", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","tareas"] }
+      }
+    },
+    {
+      "name": "5. Sin token - 401",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": { "raw": "http://127.0.0.1:8000/api/tareas", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","tareas"] }
+      }
+    },
+    {
+      "name": "6. Logout - revocar token (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://127.0.0.1:8000/api/logout", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","logout"] }
+      }
+    },
+    {
+      "name": "7. Token revocado - 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://127.0.0.1:8000/api/tareas", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","tareas"] }
+      }
+    },
+    {
+      "name": "8. Tarea ajena - 403",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token_carlos}}" }
+        ],
+        "url": { "raw": "http://127.0.0.1:8000/api/tareas/1", "protocol": "http", "host": ["127","0","0","1"], "port": "8000", "path": ["api","tareas","1"] }
+      }
+    }
+  ]
+}
